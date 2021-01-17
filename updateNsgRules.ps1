@@ -1,3 +1,8 @@
+# This script iterate throgh all NSGs in a specific scope 
+# and add FW rule to allow communiction from current identifie IP address 
+# Yochanan - Restricted to a specific FG named rgVM
+
+
 $publicIp = ((Invoke-WebRequest ifconfig.co -UserAgent curl/7.68.0).Content).Trim()
 $regex = [regex] "\d{1,3}[.]\d{1,3}[.]\d{1,3}[.]\d{1,3}"
 
@@ -5,7 +10,7 @@ if ($publicIp -match $regex) {
 
     Write-Host "`r`nPublic IP $publicIp is valid. Updating NSGs...`r`n" -BackgroundColor Yellow -ForegroundColor Black
 
-    $collection = Get-AzNetworkSecurityGroup
+    $collection = Get-AzNetworkSecurityGroup -ResourceGroup rgVM
     foreach ($item in $collection) {
         if ($item.SecurityRules.Name.Contains("Home")) {
             $nsgName = $item.Name
